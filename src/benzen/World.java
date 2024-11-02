@@ -33,8 +33,8 @@ public class World {
         while (isRunning) {
             System.out.println("Starting level "); // Generate new level
 
-            // starts the combat
-            combatSystem.startCombat(player, currentLevel.getCreatures());
+//            // starts the combat
+//            combatSystem.startCombat(player, currentLevel.getCreatures());
 
             // check if dead
             if (player.isDead()) {
@@ -46,16 +46,16 @@ public class World {
             System.out.println("You've completed Level " + currentLevelNumber);
             rewardPlayer();
 
-            // shop
-            if (currentLevelNumber % 5 == 0) {
-                shop = new Shop();
-                shop.openShop(player); // will open the shop
+//            // shop
+//            if (currentLevelNumber % 5 == 0) {
+//                shop = new Shop();
+//                shop.openShop(player); // will open the shop
             }
 
             // Progress to next level
             currentLevelNumber++;
         }
-    }
+//    }
 
     // reset the game when dying
     private void resetGame() {

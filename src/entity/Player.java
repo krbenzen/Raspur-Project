@@ -17,7 +17,7 @@ public class Player extends Entity{
 	
 	public final int screenX;
 	public final int screenY;
-	int hasPencil = 0;
+	public int hasPencil = 0;
 	int hasApplePower = 0;
 	
 	public Player(GamePanel gp, KeyInputs keyH) {

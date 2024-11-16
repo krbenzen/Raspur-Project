@@ -21,6 +21,7 @@ window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	window.setLocationRelativeTo(null);
 	window.setVisible(true);
 	
+	gamePanel.setupGame();
 	gamePanel.startGameThread();
 }
 }

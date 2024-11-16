@@ -2,6 +2,7 @@ package entity;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -16,6 +17,8 @@ public class Player extends Entity{
 	
 	public final int screenX;
 	public final int screenY;
+	int hasPencil = 0;
+	int hasApplePower = 0;
 	
 	public Player(GamePanel gp, KeyInputs keyH) {
 		this.gp = gp;
@@ -23,7 +26,13 @@ public class Player extends Entity{
 screenX = gp.screenWidth/2 - (gp.tileSize/2);
 screenY = gp.screenHeight/2 - (gp.tileSize/2);
 
-		
+solidArea = new Rectangle();
+solidArea.x = 0;
+solidArea.y = 0;
+solidAreaDefaultX = solidArea.x;
+solidAreaDefaultY = solidArea.y;
+solidArea.height = 48;
+solidArea.width = 48;
 		setDefaultValues();
 		getPlayerImage();
 	}
@@ -48,24 +57,37 @@ screenY = gp.screenHeight/2 - (gp.tileSize/2);
 		}
 	}
 	public void update() {
-		if(keyH.upPressed ==true || keyH.downPressed ==true || keyH.leftPressed ==true || keyH.rightPressed ==true ) {
-			if(keyH.upPressed == true) {
-				direction = "up";
-				worldY = worldY - speed;
-			}
-			else if(keyH.downPressed == true) {
-				direction = "down";
-				worldY = worldY + speed;
-			}
-			else if(keyH.leftPressed == true) {
-				direction = "left";
-				worldX = worldX - speed;
-			}
-			else if(keyH.rightPressed == true) {
-				direction = "right";
-				worldX = worldX + speed;
-			}
+		  if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+	            // Set direction based on key press
+	            if (keyH.upPressed) {
+	                direction = "up";
+	            } else if (keyH.downPressed) {
+	                direction = "down";
+	            } else if (keyH.leftPressed) {
+	                direction = "left";
+	            } else if (keyH.rightPressed) {
+	                direction = "right";
+	            }
+
 				
+			// checks tile collisions
+			collisionOn = false;
+			gp.colChecker.checkTile(this);
+			//check obj collisions
+			int objIndex = gp.colChecker.checkObject(this, true);
+			pickUpObject(objIndex);
+			// if false player moves
+			 if (!collisionOn) {
+	                switch (direction) {
+	                    case "up": worldY -= speed; break;
+	                    case "down": worldY += speed; break;
+	                    case "left": worldX -= speed; break;
+	                    case "right": worldX += speed; break;
+	                }
+	            
+			
+			
+			
 				spriteCounter++;
 				if(spriteCounter >12) {
 					if(spriteNum ==1) {
@@ -77,12 +99,44 @@ screenY = gp.screenHeight/2 - (gp.tileSize/2);
 					spriteCounter = 0;
 				}
 		}
-	
+		}
 	}
+	
+	public void pickUpObject(int i) {
+	    if (i != 999) { // Check if there's an object to pick up
+	        String objectName = gp.obj[i].name;
+
+	        switch (objectName) {
+	            case "Pencil":
+	            	gp.playSoundEffect(3);
+	                hasPencil++;
+	                gp.obj[i] = null; // Remove the pencil object
+	                System.out.println("YOU HAVE OBTAINED " + hasPencil + " PENCIL(S), YOU MAY PASS THROUGH!");
+	                break;
+
+	            case "Paper":
+	                if (hasPencil > 0) {
+	                    hasPencil--; // use 1 pencil
+	                    gp.obj[i] = null; // remove the paper object
+	                    System.out.println("YOU USED A PENCIL TO REMOVE A PAPER.");
+	                    gp.playSoundEffect(2);
+	                } else {
+	                    System.out.println("YOU NEED A PENCIL TO REMOVE THE PAPER!");
+	                }
+	                break;
+	                
+	            case "Apple":
+	            	 System.out.println("You ate "+ hasApplePower + " apple(s), it feels as if nothing happened");
+	            	 gp.obj[i] = null;
+	            	 gp.playSoundEffect(1);
+	            	 hasApplePower++;
+			}
+		}
+	}
+	
 	public void draw(Graphics2D g2) {
 //	g2.setColor(Color.white);
-//		
-//		g2.fillRect(x, y, gp.tileSize, gp.tileSize);
+//	g2.fillRect(x, y, gp.tileSize, gp.tileSize);
 		BufferedImage image = null;
 		switch(direction) {
 		case "up":

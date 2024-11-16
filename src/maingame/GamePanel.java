@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import entity.Player;
+import object.SuperObject;
 import tile.TileManager;
 public class GamePanel extends JPanel implements Runnable{
 	// Screen Stuff
@@ -20,16 +21,26 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int screenHeight = tileSize * maxScreenRow; // 576 pixel
 	
 	public final int maxWorldCol = 31;
-	public final int maxWorldRow = 34;
+	public final int maxWorldRow = 43;
 	public final int worldWidth = tileSize * maxWorldCol;
 	public final int worldHeight = tileSize * maxWorldRow;
 	
 	int FPS = 60;
 	TileManager tileM = new TileManager(this);
 	KeyInputs keyH = new KeyInputs();
-	
+	music music = new music();
 	Thread gameThread;
+	public collisions colChecker = new collisions(this);
+	public Assets aSetter = new Assets(this);
+	
+	
 	public Player player = new Player(this,keyH);
+	// objects the number below is the amount of inventory you have right now it is [10] slots
+	public SuperObject obj[] = new SuperObject[10];
+	
+	
+	
+	
 	
 	//player default pos
 	int playerX = 100;
@@ -44,7 +55,10 @@ public class GamePanel extends JPanel implements Runnable{
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
 	}
-
+public void setupGame() {
+	aSetter.setObject();
+	playMusic(0);
+}
 	public void startGameThread() {
 		gameThread = new Thread(this);
 		gameThread.start();
@@ -114,8 +128,28 @@ public class GamePanel extends JPanel implements Runnable{
 		super.paintComponent(g);
 		
 		Graphics2D g2 = (Graphics2D)g;
+		//tile initialization
 		tileM.draw(g2);
+		//objects initialization'
+		for(int i = 0; i < obj.length; i++) {
+			if(obj[i] != null) {
+				obj[i].draw(g2, this);
+			}
+		}
+		//player  initialization
 		player.draw(g2);
 		g2.dispose();
+	}
+	public void playMusic(int i) {
+		music.setFile(i);
+		music.play();
+		music.loop();
+	}
+	public void stopMusic() {
+		music.stop();
+	}
+	public void playSoundEffect(int i) {
+		music.setFile(i);
+		music.play();
 	}
 }

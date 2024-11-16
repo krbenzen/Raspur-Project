@@ -25,13 +25,14 @@ public class KeyInputs implements KeyListener{
 		}
 		if(code == KeyEvent.VK_D) {
 			rightPressed = true;
+	
+			}
 		}
-		
 	
 		
 
 
-	}
+	
 
 	@Override
 	public void keyReleased(KeyEvent e) {
@@ -47,7 +48,8 @@ public class KeyInputs implements KeyListener{
 		}
 		if(code == KeyEvent.VK_D) {
 			rightPressed = false;
-		}
+
 	}
 
+}
 }

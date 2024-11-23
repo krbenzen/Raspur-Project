@@ -10,18 +10,20 @@ import javax.imageio.ImageIO;
 
 import maingame.GamePanel;
 import maingame.KeyInputs;
+import maingame.Utility;
 
 public class Player extends Entity{
-	GamePanel gp;
+	
 	KeyInputs keyH;
 	
 	public final int screenX;
 	public final int screenY;
-	public int hasPencil = 0;
+//	public int hasPencil = 0;
 	int hasApplePower = 0;
 	
 	public Player(GamePanel gp, KeyInputs keyH) {
-		this.gp = gp;
+		super(gp);
+
 		this.keyH = keyH;
 screenX = gp.screenWidth/2 - (gp.tileSize/2);
 screenY = gp.screenHeight/2 - (gp.tileSize/2);
@@ -43,18 +45,17 @@ solidArea.width = 48;
 		direction = "down";
 	}
 	public void getPlayerImage() {
-		try {
-			up1 = ImageIO.read(getClass().getResourceAsStream("/player/up1.png"));
-			up2 = ImageIO.read(getClass().getResourceAsStream("/player/up1.png"));
-			down1 = ImageIO.read(getClass().getResourceAsStream("/player/down1.png"));
-			down2 = ImageIO.read(getClass().getResourceAsStream("/player/down2.png"));
-			left1 = ImageIO.read(getClass().getResourceAsStream("/player/left1.png"));
-			left2 = ImageIO.read(getClass().getResourceAsStream("/player/left2.png"));
-			right1 = ImageIO.read(getClass().getResourceAsStream("/player/right1.png"));
-			right2 = ImageIO.read(getClass().getResourceAsStream("/player/right2.png"));
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
+	
+			up1 = setup("/player/up1");
+			up2 = setup("/player/up2");
+			down1 = setup("/player/down1");
+			down2 =  setup("/player/down2");
+			left1 =  setup("/player/left1");
+			left2 = setup("/player/left2");
+			right1 = setup("/player/right1");
+			right2 = setup("/player/right2");
+	
+	
 	}
 	public void update() {
 		  if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
@@ -104,33 +105,39 @@ solidArea.width = 48;
 	
 	public void pickUpObject(int i) {
 	    if (i != 999) { // Check if there's an object to pick up
-	        String objectName = gp.obj[i].name;
-
-	        switch (objectName) {
-	            case "Pencil":
-	            	gp.playSoundEffect(3);
-	                hasPencil++;
-	                gp.obj[i] = null; // Remove the pencil object
-	                System.out.println("YOU HAVE OBTAINED " + hasPencil + " PENCIL(S), YOU MAY PASS THROUGH!");
-	                break;
-
-	            case "Paper":
-	                if (hasPencil > 0) {
-	                    hasPencil--; // use 1 pencil
-	                    gp.obj[i] = null; // remove the paper object
-	                    System.out.println("YOU USED A PENCIL TO REMOVE A PAPER.");
-	                    gp.playSoundEffect(2);
-	                } else {
-	                    System.out.println("YOU NEED A PENCIL TO REMOVE THE PAPER!");
-	                }
-	                break;
-	                
-	            case "Apple":
-	            	 System.out.println("You ate "+ hasApplePower + " apple(s), it feels as if nothing happened");
-	            	 gp.obj[i] = null;
-	            	 gp.playSoundEffect(1);
-	            	 hasApplePower++;
-			}
+//	        String objectName = gp.obj[i].name;
+//
+//	        switch (objectName) {
+//	            case "Pencil":
+//	            	gp.playSoundEffect(3);
+//	                hasPencil++;
+//	                gp.obj[i] = null; // Remove the pencil object
+//	                gp.ui.showMessage("You have obtained a Pencil!");
+//	                break;
+//
+//	            case "Paper":
+//	                if (hasPencil > 0) {
+//	                    hasPencil--; // use 1 pencil
+//	                    gp.obj[i] = null; // remove the paper object
+//	                    gp.ui.showMessage("YOU USED A PENCIL");
+//	                    gp.playSoundEffect(2);
+//	                } else {
+//	                    gp.ui.showMessage("YOU NEED A PENCIL");
+//	                    gp.playSoundEffect(4);
+//	                }
+//	                break;
+//	                
+//	            case "Apple":
+//	            	gp.obj[i] = null;
+//	            	gp.ui.showMessage("You ate an apple.");
+//	            	gp.ui.gameFinished=true;
+//	            	gp.stopMusic();
+//	            
+//	           
+//	            	 gp.playSoundEffect(2);
+//	            	 hasApplePower++;
+//	            	 break;
+//			}
 		}
 	}
 	
@@ -172,6 +179,6 @@ solidArea.width = 48;
 			}
 			break;
 		}
-		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		g2.drawImage(image, screenX, screenY, null);
 	}
 }

@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import entity.Entity;
 import entity.Player;
 import object.SuperObject;
 import tile.TileManager;
@@ -27,18 +28,25 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	int FPS = 60;
 	TileManager tileM = new TileManager(this);
-	KeyInputs keyH = new KeyInputs();
+	KeyInputs keyH = new KeyInputs(this);
 	music music = new music();
+	music soundeffect = new music();
 	Thread gameThread;
 	public collisions colChecker = new collisions(this);
 	public Assets aSetter = new Assets(this);
+	
 	public UI ui = new UI(this);
 	
 	
 	public Player player = new Player(this,keyH);
 	// objects the number below is the amount of inventory you have right now it is [10] slots
 	public SuperObject obj[] = new SuperObject[10];
+	public Entity npc[] = new Entity [100];
 	
+	//pause and play
+	public int gameState;
+	public final int playState = 1;
+	public final int pauseState = 2;
 	
 	
 	
@@ -58,7 +66,11 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 public void setupGame() {
 	aSetter.setObject();
+	aSetter.setNPC();
 	playMusic(0);
+	
+	gameState = playState;
+	
 }
 	public void startGameThread() {
 		gameThread = new Thread(this);
@@ -123,12 +135,31 @@ public void setupGame() {
 		}
 	}
 	public void update() {
+		if(gameState == playState) {
+			//player
 			player.update();
+			//npc
+			for(int i = 0; i < npc.length; i++) {
+				if(npc[i] != null) {
+					npc[i].update();
+				}
+			}
+		}
+		if(gameState == pauseState) {
+			//nothibng
+		}
 	}
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
 		Graphics2D g2 = (Graphics2D)g;
+		//deb
+	
+		long drawStart = 0;
+		if(keyH.checkDrawTime == true) {
+			drawStart = System.nanoTime();
+		}
+		
 		//tile initialization
 		tileM.draw(g2);
 		//objects initialization'
@@ -137,9 +168,29 @@ public void setupGame() {
 				obj[i].draw(g2, this);
 			}
 		}
+		//npc
+		for(int i = 0; i <npc.length; i++) {
+			if(npc[i] != null) {
+				npc[i].draw(g2);
+				
+			}
+		}
+		
 		//player  initialization
 		player.draw(g2);
-		g2.dispose();
+		
+		//ui stuff 
+		ui.draw(g2);
+		
+		if(keyH.checkDrawTime == true) {
+			long drawEnd = System.nanoTime();
+			long passed = drawEnd - drawStart;
+			g2.setColor(Color.black);
+			g2.drawString("draw Time:" + passed, 100,100);
+			System.out.println("Draw TimeL:" + passed);
+			g2.dispose();
+		}
+	
 	}
 	public void playMusic(int i) {
 		music.setFile(i);
@@ -150,7 +201,7 @@ public void setupGame() {
 		music.stop();
 	}
 	public void playSoundEffect(int i) {
-		music.setFile(i);
-		music.play();
+		soundeffect.setFile(i);
+		soundeffect.play();
 	}
 }

@@ -11,11 +11,11 @@ Clip clip;
 URL soundURL[] = new URL[30];
 
 public music() {
-	soundURL[0] = getClass().getResource("/Sounds/benzenbeat (1).wav");
+	soundURL[0] = getClass().getResource("/Sounds/benzenbeat (2).wav");
 	soundURL[1] = getClass().getResource("/Sounds/Cartoon Bite sound effect.wav");
-	soundURL[2] = getClass().getResource("/Sounds/Pencil sound effect.wav");
-	soundURL[3] = getClass().getResource("/Sounds/SM64 Star Sparkle Sound.wav");
-	
+	soundURL[2] = getClass().getResource("/Sounds/yipee.wav");
+	soundURL[3] = getClass().getResource("/Sounds/itemobtained.wav");
+	soundURL[4] = getClass().getResource("/Sounds/do not enter.wav");
 
 }
 public void setFile(int i) {
